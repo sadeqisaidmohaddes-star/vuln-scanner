@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0",
+  "description": "Small set of well-known DEFAULT credentials for an authorized default-credential CHECK. The module makes at most one attempt per entry against a detected auth surface, reports acceptance, and does nothing further (no session reuse, no enumeration).",
+  "credentials": [
+    { "service": "http-basic", "username": "admin", "password": "admin", "note": "Generic admin/admin" },
+    { "service": "http-basic", "username": "admin", "password": "password", "note": "Generic admin/password" },
+    { "service": "http-basic", "username": "admin", "password": "", "note": "Blank password" },
+    { "service": "http-basic", "username": "root", "password": "root", "note": "Generic root/root" },
+    { "service": "http-basic", "username": "administrator", "password": "administrator", "note": "Windows-style admin" },
+    { "service": "http-basic", "username": "tomcat", "password": "tomcat", "product": "Apache Tomcat", "note": "Tomcat manager default" },
+    { "service": "http-basic", "username": "admin", "password": "tomcat", "product": "Apache Tomcat" },
+    { "service": "http-basic", "username": "user", "password": "user", "note": "Generic user/user" },
+    { "service": "http-basic", "username": "guest", "password": "guest", "note": "Generic guest/guest" },
+    { "service": "http-basic", "username": "admin", "password": "changeme", "note": "changeme default" },
+    { "service": "http-basic", "username": "admin", "password": "admin123", "note": "Common variant" },
+    { "service": "http-basic", "username": "cisco", "password": "cisco", "product": "Cisco", "note": "Cisco default" },
+    { "service": "http-basic", "username": "ubnt", "password": "ubnt", "product": "Ubiquiti", "note": "UniFi/Ubiquiti default" },
+    { "service": "http-form", "username": "admin", "password": "admin", "note": "Generic admin/admin (form login)" },
+    { "service": "http-form", "username": "admin", "password": "password", "note": "Generic (form login)" }
+  ]
+}
