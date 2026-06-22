@@ -1,0 +1,134 @@
+{
+  "schema_version": "1.0",
+  "updated": "2026-06-13",
+  "source": "bundled starter set — replace/extend via an updatable feed (see README)",
+  "match_semantics": {
+    "product": "case-insensitive substring match against the observed product name",
+    "service": "optional; case-insensitive exact match against the observed service",
+    "affected": "all present constraints must hold (logical AND). version_lt/le/gt/ge compare loosely (numeric-aware); 'versions' is a list of exact vulnerable version strings"
+  },
+  "signatures": [
+    {
+      "id": "VS-0001",
+      "product": "OpenSSH",
+      "service": "ssh",
+      "cpe": "cpe:2.3:a:openbsd:openssh:*",
+      "affected": { "version_ge": "8.5", "version_lt": "9.3p2" },
+      "cve": "CVE-2023-38408",
+      "cwe": "CWE-426",
+      "severity": "High",
+      "title": "OpenSSH ssh-agent PKCS#11 remote code execution (CVE-2023-38408)",
+      "description": "A flaw in OpenSSH's forwarded ssh-agent allows a remote attacker (with access to a forwarded agent socket) to load arbitrary shared libraries from the agent host, leading to remote code execution.",
+      "references": ["CVE-2023-38408", "https://www.openssh.com/txt/release-9.3p2"]
+    },
+    {
+      "id": "VS-0002",
+      "product": "nginx",
+      "service": "http",
+      "cpe": "cpe:2.3:a:f5:nginx:*",
+      "affected": { "version_ge": "0.6.18", "version_lt": "1.21.0" },
+      "cve": "CVE-2021-23017",
+      "cwe": "CWE-193",
+      "severity": "High",
+      "title": "nginx DNS resolver off-by-one heap write (CVE-2021-23017)",
+      "description": "An off-by-one in nginx's resolver can allow an attacker who can spoof DNS responses to overwrite adjacent heap memory, potentially leading to worker process crash or code execution. Only affects configurations using the 'resolver' directive.",
+      "references": ["CVE-2021-23017", "https://nginx.org/en/security_advisories.html"]
+    },
+    {
+      "id": "VS-0003",
+      "product": "Apache",
+      "service": "http",
+      "cpe": "cpe:2.3:a:apache:http_server:*",
+      "affected": { "versions": ["2.4.49"] },
+      "cve": "CVE-2021-41773",
+      "cwe": "CWE-22",
+      "severity": "High",
+      "title": "Apache HTTP Server 2.4.49 path traversal / RCE (CVE-2021-41773)",
+      "description": "A path normalization flaw in Apache httpd 2.4.49 permits path traversal to files outside the document root, and remote code execution where mod_cgi is enabled.",
+      "references": ["CVE-2021-41773", "https://httpd.apache.org/security/vulnerabilities_24.html"]
+    },
+    {
+      "id": "VS-0004",
+      "product": "Apache",
+      "service": "http",
+      "cpe": "cpe:2.3:a:apache:http_server:*",
+      "affected": { "versions": ["2.4.49", "2.4.50"] },
+      "cve": "CVE-2021-42013",
+      "cwe": "CWE-22",
+      "severity": "Critical",
+      "title": "Apache HTTP Server path traversal / RCE (CVE-2021-42013)",
+      "description": "Incomplete fix for CVE-2021-41773 in 2.4.50; path traversal and remote code execution remain possible in 2.4.49 and 2.4.50. Fixed in 2.4.51.",
+      "references": ["CVE-2021-42013", "https://httpd.apache.org/security/vulnerabilities_24.html"]
+    },
+    {
+      "id": "VS-0005",
+      "product": "OpenSSL",
+      "affected": { "version_ge": "3.0.0", "version_le": "3.0.6" },
+      "cve": "CVE-2022-3786",
+      "cwe": "CWE-787",
+      "severity": "High",
+      "title": "OpenSSL X.509 email address buffer overflow (CVE-2022-3786)",
+      "description": "A buffer overflow in OpenSSL 3.0.0–3.0.6 during X.509 name constraint checking (punycode) can cause a crash (DoS). Fixed in 3.0.7.",
+      "references": ["CVE-2022-3786", "https://www.openssl.org/news/secadv/20221101.txt"]
+    },
+    {
+      "id": "VS-0006",
+      "product": "Log4j",
+      "affected": { "version_ge": "2.0", "version_lt": "2.15.0" },
+      "cve": "CVE-2021-44228",
+      "cwe": "CWE-502",
+      "severity": "Critical",
+      "title": "Apache Log4j2 JNDI remote code execution — \"Log4Shell\" (CVE-2021-44228)",
+      "description": "Log4j2 JNDI features used in configuration, log messages, and parameters do not protect against attacker-controlled LDAP/JNDI endpoints, allowing remote code execution. Mitigated in 2.15.0 and fully fixed in 2.17.1.",
+      "references": ["CVE-2021-44228", "https://logging.apache.org/log4j/2.x/security.html"]
+    },
+    {
+      "id": "VS-0007",
+      "product": "vsftpd",
+      "service": "ftp",
+      "affected": { "versions": ["2.3.4"] },
+      "cve": "CVE-2011-2523",
+      "cwe": "CWE-78",
+      "severity": "Critical",
+      "title": "vsftpd 2.3.4 backdoor command execution (CVE-2011-2523)",
+      "description": "A maliciously introduced backdoor in vsftpd 2.3.4 opens a root shell on TCP/6200 when a username containing ':)' is supplied. Any host running this exact version should be treated as compromised.",
+      "references": ["CVE-2011-2523"]
+    },
+    {
+      "id": "VS-0008",
+      "product": "ProFTPD",
+      "service": "ftp",
+      "affected": { "version_ge": "1.3.5", "version_lt": "1.3.5a" },
+      "cve": "CVE-2015-3306",
+      "cwe": "CWE-22",
+      "severity": "Critical",
+      "title": "ProFTPD mod_copy arbitrary file read/write (CVE-2015-3306)",
+      "description": "The mod_copy module in ProFTPD 1.3.5 allows unauthenticated remote attackers to copy files via SITE CPFR/CPTO, enabling arbitrary file read/write and potential remote code execution.",
+      "references": ["CVE-2015-3306"]
+    },
+    {
+      "id": "VS-0009",
+      "product": "Exim",
+      "service": "smtp",
+      "affected": { "version_ge": "4.87", "version_lt": "4.92" },
+      "cve": "CVE-2019-10149",
+      "cwe": "CWE-78",
+      "severity": "Critical",
+      "title": "Exim deliver_message() remote command execution (CVE-2019-10149)",
+      "description": "Improper validation of the recipient address in deliver_message() allows local and (in some configurations) remote attackers to execute commands as root. Fixed in 4.92.",
+      "references": ["CVE-2019-10149"]
+    },
+    {
+      "id": "VS-0010",
+      "product": "Microsoft-IIS",
+      "service": "http",
+      "affected": { "versions": ["6.0"] },
+      "cve": "CVE-2017-7269",
+      "cwe": "CWE-119",
+      "severity": "High",
+      "title": "Microsoft IIS 6.0 WebDAV ScStoragePathFromUrl buffer overflow (CVE-2017-7269)",
+      "description": "A buffer overflow in the ScStoragePathFromUrl function in the WebDAV service of IIS 6.0 allows remote attackers to execute code via a long header in a PROPFIND request.",
+      "references": ["CVE-2017-7269"]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+# Example vulnscan scope file.
+# Copy this, edit for your engagement, and run:
+#   vulnscan --scope my-engagement.yaml --authorize --format all --output report
+#
+# The scan is REFUSED unless authorization.authorized is true AND you also pass
+# --authorize on the command line. Keep real scope files out of version control
+# (the bundled .gitignore already excludes scope*.yaml).
+
+authorization:
+  authorized: true
+  authorized_by: "Jane Doe, CISO — Acme Corp"
+  engagement_id: "PT-2026-014"
+  date: "2026-06-13"
+  expires: "2026-07-13"          # the scan refuses to run after this ISO date
+  notes: "Statement of Work SOW-2026-014, external perimeter assessment."
+
+scope:
+  # Hosts, IPs, CIDR ranges, domains, and parameterised URLs are all accepted.
+  targets:
+    - example.com                                   # domain (DNS + web + TLS)
+    - www.example.com
+    - 192.0.2.10                                    # single host
+    - 192.0.2.0/28                                  # CIDR (expanded, capped for safety)
+    - https://app.example.com/search?q=test         # URL with a parameter (injection checks)
+  exclude:
+    - 192.0.2.1                                     # never touched, even if in a range above
+  ports: [21, 22, 25, 53, 80, 110, 143, 443, 3306, 5432, 8080, 8443]
+  nameservers:
+    - ns1.example.com                               # AXFR attempted only against scoped NS
+
+settings:
+  rate_limit: 10        # requests per second (CLI --rate-limit overrides)
+  concurrency: 20       # max concurrent operations (CLI --concurrency overrides)
+  timeout: 10           # per-operation timeout in seconds
+  passive: false        # true => skip intrusive modules
