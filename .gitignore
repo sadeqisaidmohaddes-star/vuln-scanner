@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+
+# Test / tooling
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Scanner output (reports may contain sensitive engagement data)
+*.report.json
+*.report.html
+vulnscan-report.*
+reports/
+out/
+
+# Scope files often contain client/engagement details — do not commit by default
+scope*.yaml
+scope*.yml
+!examples/scope.example.yaml
+
+# Editor
+.idea/
+.vscode/
+*.swp
+.DS_Store
