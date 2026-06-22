@@ -1,0 +1,134 @@
+/* Supplemental styles for the vulnscan dashboard.
+   Layout/spacing come from Tailwind (CDN); this file owns the stateful bits
+   (segmented control, toggle switch, progress animation) and severity badges. */
+
+:root {
+  --sev-critical: #b00020;
+  --sev-high: #d9534f;
+  --sev-medium: #f0ad4e;
+  --sev-low: #5bc0de;
+  --sev-info: #777777;
+}
+
+/* Segmented "Auto / URL / Repo" control */
+.kind-btn {
+  color: #94a3b8;
+}
+.kind-btn[aria-pressed="true"] {
+  background: rgba(34, 211, 238, 0.16);
+  color: #e2faff;
+  box-shadow: inset 0 0 0 1px rgba(34, 211, 238, 0.35);
+}
+
+/* Toggle switch (role=switch) */
+.toggle {
+  transition: background-color 0.18s ease;
+}
+.toggle[aria-checked="true"] {
+  background: #06b6d4;
+}
+.toggle[aria-checked="true"] .toggle-dot {
+  transform: translateX(1.375rem);
+  background: #06212a;
+}
+
+/* Indeterminate progress sweep */
+.progress-indeterminate {
+  animation: vs-indeterminate 1.25s ease-in-out infinite;
+}
+@keyframes vs-indeterminate {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(360%); }
+}
+.progress-determinate {
+  animation: none;
+  transition: width 0.35s ease;
+}
+
+/* Severity badge (color applied inline from JS for reliability) */
+.sev-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.1rem 0.5rem;
+  border-radius: 0.4rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #fff;
+  white-space: nowrap;
+}
+
+/* Severity filter chips */
+.sev-chip {
+  cursor: pointer;
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #11161f;
+  transition: opacity 0.15s ease, border-color 0.15s ease;
+}
+.sev-chip[aria-pressed="false"] {
+  opacity: 0.4;
+}
+.sev-chip .dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 9999px;
+}
+
+/* Finding cards */
+.finding {
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-left-width: 3px;
+  border-radius: 0.75rem;
+  background: #11161f;
+  overflow: hidden;
+}
+.finding summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.finding summary::-webkit-details-marker { display: none; }
+.finding[open] summary {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.finding .chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.05rem 0.45rem;
+  border-radius: 0.3rem;
+  font-size: 0.68rem;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.06);
+  color: #cbd5e1;
+  white-space: nowrap;
+}
+.finding pre.evidence {
+  margin: 0;
+  padding: 0.7rem 0.85rem;
+  background: #0a0e14;
+  border-radius: 0.5rem;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: #cbd5e1;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.finding a { color: #67e8f9; text-decoration: underline; text-underline-offset: 2px; }
+.finding a:hover { color: #a5f3fc; }
+
+/* Thin scrollbars for the module list */
+#modules-list::-webkit-scrollbar { width: 8px; }
+#modules-list::-webkit-scrollbar-thumb { background: #2a3344; border-radius: 8px; }

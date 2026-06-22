@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>vulnscan — local vulnerability dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            sev: {
+              critical: "#b00020",
+              high: "#d9534f",
+              medium: "#f0ad4e",
+              low: "#5bc0de",
+              info: "#777777",
+            },
+            ink: {
+              900: "#0a0e14",
+              850: "#0d1219",
+              800: "#11161f",
+              750: "#161c27",
+              700: "#1c2331",
+              600: "#2a3344",
+            },
+          },
+          fontFamily: {
+            mono: ["ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "monospace"],
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body class="min-h-screen bg-ink-900 text-slate-200 font-sans antialiased">
+
+  <!-- Header -->
+  <header class="border-b border-white/5 bg-ink-850/80 backdrop-blur sticky top-0 z-20">
+    <div class="mx-auto max-w-5xl px-5 py-4 flex items-center gap-3">
+      <div class="grid place-items-center w-9 h-9 rounded-lg bg-gradient-to-br from-cyan-500/20 to-indigo-500/20 ring-1 ring-cyan-400/30">
+        <svg viewBox="0 0 24 24" class="w-5 h-5 text-cyan-300" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 2 4 5v6c0 5 3.4 8.5 8 11 4.6-2.5 8-6 8-11V5l-8-3Z"/>
+          <path d="m9 12 2 2 4-4"/>
+        </svg>
+      </div>
+      <div class="leading-tight">
+        <h1 class="text-lg font-semibold tracking-tight text-white">vulnscan</h1>
+        <p class="text-xs text-slate-400">Local dashboard for authorized live (URL) and static (repo) vulnerability scans.</p>
+      </div>
+      <div class="ml-auto text-[11px] text-slate-500 font-mono hidden sm:block" id="health-pill">local</div>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-5xl px-5 py-7 space-y-6">
+
+    <!-- Scan form -->
+    <section class="rounded-2xl border border-white/5 bg-ink-800 shadow-xl shadow-black/30 overflow-hidden">
+      <form id="scan-form" class="p-5 sm:p-6 space-y-5">
+
+        <!-- Target + kind -->
+        <div class="space-y-2">
+          <label for="target" class="block text-sm font-medium text-slate-300">Target</label>
+          <div class="flex flex-col sm:flex-row gap-3">
+            <input
+              id="target"
+              name="target"
+              type="text"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="https://example.com  ·  owner/repo  ·  https://github.com/owner/repo.git"
+              class="flex-1 rounded-xl bg-ink-750 border border-white/10 px-4 py-3 text-[15px] text-white font-mono placeholder:text-slate-500 placeholder:font-sans focus:outline-none focus:ring-2 focus:ring-cyan-500/60 focus:border-cyan-500/40 transition"
+            />
+            <!-- Segmented control -->
+            <div role="radiogroup" aria-label="Scan kind" id="kind-control" class="inline-flex shrink-0 rounded-xl bg-ink-750 border border-white/10 p-1 text-sm">
+              <button type="button" data-kind="auto" class="kind-btn px-3.5 py-2 rounded-lg font-medium transition" aria-pressed="true">Auto</button>
+              <button type="button" data-kind="url" class="kind-btn px-3.5 py-2 rounded-lg font-medium transition" aria-pressed="false">URL</button>
+              <button type="button" data-kind="repo" class="kind-btn px-3.5 py-2 rounded-lg font-medium transition" aria-pressed="false">Repo</button>
+            </div>
+          </div>
+          <p class="text-xs text-slate-500" id="kind-hint">
+            Auto-detection picks <span class="text-slate-400 font-medium">Repo</span> for github/gitlab URLs, <span class="font-mono text-slate-400">owner/repo</span> shorthand, or a <span class="font-mono text-slate-400">.git</span> suffix — otherwise a live <span class="text-slate-400 font-medium">URL</span> scan.
+            <span id="kind-resolved" class="ml-1 text-cyan-300/90"></span>
+          </p>
+        </div>
+
+        <!-- Advanced (collapsible) -->
+        <div class="rounded-xl border border-white/5 bg-ink-850/60">
+          <button type="button" id="adv-toggle" class="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-slate-300 hover:text-white transition" aria-expanded="false" aria-controls="adv-panel">
+            <span class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 8v8M8 12h8" stroke-linecap="round"/><circle cx="12" cy="12" r="9"/></svg>
+              Advanced options
+            </span>
+            <svg id="adv-chevron" class="w-4 h-4 text-slate-500 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div id="adv-panel" class="hidden px-4 pb-4 pt-1 space-y-5 border-t border-white/5">
+
+            <!-- Passive toggle (URL) -->
+            <div id="passive-row" class="flex items-start justify-between gap-4">
+              <div>
+                <label for="passive" class="text-sm font-medium text-slate-300">Passive mode</label>
+                <p class="text-xs text-slate-500">Skip intrusive modules. Applies to live URL scans.</p>
+              </div>
+              <button type="button" id="passive" role="switch" aria-checked="false" class="toggle relative inline-flex h-6 w-11 shrink-0 items-center rounded-full bg-ink-600 transition">
+                <span class="toggle-dot inline-block h-4 w-4 transform rounded-full bg-slate-300 transition translate-x-1"></span>
+              </button>
+            </div>
+
+            <!-- GitHub token (repo) -->
+            <div id="token-row" class="space-y-1.5 hidden">
+              <label for="token" class="text-sm font-medium text-slate-300">GitHub token <span class="text-slate-500 font-normal">(optional, for private repos)</span></label>
+              <input id="token" type="password" autocomplete="off" placeholder="ghp_… / github_pat_…" class="w-full rounded-lg bg-ink-750 border border-white/10 px-3.5 py-2.5 text-sm text-white font-mono placeholder:font-sans placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50" />
+              <p class="text-xs text-slate-500">Used only to clone the repository. Never stored or sent anywhere but this local server.</p>
+            </div>
+
+            <!-- Ref (repo) -->
+            <div id="ref-row" class="space-y-1.5 hidden">
+              <label for="ref" class="text-sm font-medium text-slate-300">Ref <span class="text-slate-500 font-normal">(optional branch, tag, or commit)</span></label>
+              <input id="ref" type="text" autocomplete="off" placeholder="main" class="w-full rounded-lg bg-ink-750 border border-white/10 px-3.5 py-2.5 text-sm text-white font-mono placeholder:font-sans placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50" />
+            </div>
+
+            <!-- Modules multi-select -->
+            <div class="space-y-2">
+              <div class="flex items-center justify-between">
+                <label class="text-sm font-medium text-slate-300">Modules</label>
+                <div class="text-xs text-slate-500">
+                  <span id="modules-mode" class="font-mono text-slate-400"></span> ·
+                  <button type="button" id="modules-clear" class="text-cyan-400/80 hover:text-cyan-300 underline-offset-2 hover:underline">none = all</button>
+                </div>
+              </div>
+              <div id="modules-list" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-64 overflow-auto pr-1">
+                <div class="text-xs text-slate-500 py-2">Loading modules…</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Authorization gate -->
+        <div id="auth-gate" class="rounded-xl border border-amber-500/20 bg-amber-500/[0.04] p-4 space-y-2">
+          <label class="flex items-start gap-3 cursor-pointer select-none">
+            <input id="authorized" type="checkbox" class="mt-0.5 h-4 w-4 rounded border-white/20 bg-ink-750 text-cyan-500 focus:ring-cyan-500/50 focus:ring-offset-0" />
+            <span class="text-sm text-slate-200 font-medium">I am authorized to test this target.</span>
+          </label>
+          <p class="text-xs text-amber-300/80 pl-7 flex items-start gap-1.5">
+            <svg class="w-3.5 h-3.5 mt-px shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 9v4m0 4h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Only scan systems you own or are explicitly authorized to test.
+          </p>
+        </div>
+
+        <!-- Submit -->
+        <div class="flex items-center gap-3">
+          <button id="scan-btn" type="submit" class="inline-flex items-center gap-2 rounded-xl bg-cyan-500 px-5 py-3 text-sm font-semibold text-ink-900 shadow-lg shadow-cyan-500/20 hover:bg-cyan-400 disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none transition">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3" stroke-linecap="round"/></svg>
+            <span id="scan-btn-label">Start scan</span>
+          </button>
+          <button id="reset-btn" type="button" class="hidden rounded-xl border border-white/10 px-4 py-3 text-sm font-medium text-slate-300 hover:bg-white/5 transition">New scan</button>
+          <p id="form-error" role="alert" class="text-sm text-sev-high hidden"></p>
+        </div>
+      </form>
+    </section>
+
+    <!-- Live status -->
+    <section id="status-card" class="hidden rounded-2xl border border-white/5 bg-ink-800 p-5 sm:p-6">
+      <div class="flex items-center gap-3">
+        <span id="status-spinner" class="relative flex h-3 w-3">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-60"></span>
+          <span class="relative inline-flex rounded-full h-3 w-3 bg-cyan-500"></span>
+        </span>
+        <div class="min-w-0">
+          <p id="status-line" class="text-sm font-medium text-slate-200 truncate">Preparing scan…</p>
+          <p id="status-sub" class="text-xs text-slate-500 font-mono truncate"></p>
+        </div>
+        <div class="ml-auto text-right">
+          <div id="status-count" class="text-sm font-semibold text-white tabular-nums">0</div>
+          <div class="text-[10px] uppercase tracking-wide text-slate-500">findings</div>
+        </div>
+      </div>
+      <div class="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-ink-700">
+        <div id="progress-bar" class="h-full w-1/3 rounded-full bg-gradient-to-r from-cyan-500 to-indigo-500 progress-indeterminate"></div>
+      </div>
+      <p id="progress-text" class="mt-2 text-xs text-slate-500 tabular-nums"></p>
+    </section>
+
+    <!-- Summary (on complete) -->
+    <section id="summary-card" class="hidden rounded-2xl border border-white/5 bg-ink-800 p-5 sm:p-6">
+      <div class="flex flex-wrap items-start gap-4">
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2.5">
+            <span id="summary-badge" class="sev-badge">—</span>
+            <h2 class="text-base font-semibold text-white">Scan complete</h2>
+          </div>
+          <p id="summary-meta" class="mt-1 text-xs text-slate-400 font-mono break-all"></p>
+        </div>
+        <div class="flex gap-2">
+          <a id="dl-json" href="#" class="inline-flex items-center gap-1.5 rounded-lg border border-white/10 px-3 py-2 text-xs font-medium text-slate-200 hover:bg-white/5 transition">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 21h14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            JSON
+          </a>
+          <a id="dl-html" href="#" class="inline-flex items-center gap-1.5 rounded-lg border border-white/10 px-3 py-2 text-xs font-medium text-slate-200 hover:bg-white/5 transition">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 21h14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            HTML report
+          </a>
+        </div>
+      </div>
+      <div id="summary-counts" class="mt-4 grid grid-cols-3 sm:grid-cols-5 gap-2"></div>
+      <div id="summary-errors" class="hidden mt-4 rounded-lg border border-sev-high/20 bg-sev-high/[0.05] p-3 text-xs"></div>
+    </section>
+
+    <!-- Error banner -->
+    <section id="error-card" class="hidden rounded-2xl border border-sev-high/30 bg-sev-high/[0.06] p-5">
+      <div class="flex items-start gap-3">
+        <svg class="w-5 h-5 text-sev-high shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4m0 4h.01" stroke-linecap="round"/></svg>
+        <div class="min-w-0">
+          <h3 id="error-title" class="text-sm font-semibold text-white">Scan failed</h3>
+          <p id="error-message" class="mt-1 text-sm text-slate-300 break-words"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Findings -->
+    <section id="findings-section" class="hidden space-y-4">
+      <!-- Severity filter bar -->
+      <div id="sev-bar" class="flex flex-wrap items-center gap-2"></div>
+      <div id="findings-groups" class="space-y-5"></div>
+      <p id="findings-empty" class="hidden text-center text-sm text-slate-500 py-10">No findings yet.</p>
+    </section>
+
+  </main>
+
+  <footer class="mx-auto max-w-5xl px-5 py-8 text-center text-xs text-slate-600">
+    vulnscan · runs locally · only scan systems you own or are authorized to test
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
