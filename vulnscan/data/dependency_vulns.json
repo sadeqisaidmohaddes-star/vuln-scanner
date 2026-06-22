@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0",
+  "updated": "2026-06-13",
+  "source": "bundled offline starter set — the dependencies module prefers the live OSV.dev API and falls back to this DB when offline",
+  "match_semantics": "package matched case-insensitively within an ecosystem; 'affected' uses the same constraints as core.versioning.version_satisfies (version_lt/le/gt/ge, versions[])",
+  "advisories": [
+    { "ecosystem": "npm", "package": "lodash", "affected": { "version_lt": "4.17.21" }, "cve": "CVE-2021-23337", "cwe": "CWE-94", "severity": "High", "fixed": "4.17.21", "title": "lodash command injection via template", "references": ["CVE-2021-23337", "https://github.com/advisories/GHSA-35jh-r3h4-6jhm"] },
+    { "ecosystem": "npm", "package": "minimist", "affected": { "version_lt": "1.2.6" }, "cve": "CVE-2021-44906", "cwe": "CWE-1321", "severity": "Critical", "fixed": "1.2.6", "title": "minimist prototype pollution", "references": ["CVE-2021-44906"] },
+    { "ecosystem": "npm", "package": "axios", "affected": { "version_lt": "0.21.2" }, "cve": "CVE-2021-3749", "cwe": "CWE-400", "severity": "High", "fixed": "0.21.2", "title": "axios ReDoS via trim", "references": ["CVE-2021-3749"] },
+    { "ecosystem": "npm", "package": "node-fetch", "affected": { "version_lt": "2.6.7" }, "cve": "CVE-2022-0235", "cwe": "CWE-200", "severity": "Medium", "fixed": "2.6.7", "title": "node-fetch leaks sensitive headers on redirect", "references": ["CVE-2022-0235"] },
+    { "ecosystem": "npm", "package": "express", "affected": { "version_lt": "4.17.3" }, "cve": "CVE-2022-24999", "cwe": "CWE-1321", "severity": "High", "fixed": "4.17.3", "title": "qs prototype pollution affecting Express", "references": ["CVE-2022-24999"] },
+    { "ecosystem": "PyPI", "package": "django", "affected": { "version_ge": "3.2", "version_lt": "3.2.14" }, "cve": "CVE-2022-34265", "cwe": "CWE-89", "severity": "High", "fixed": "3.2.14", "title": "Django Trunc/Extract SQL injection", "references": ["CVE-2022-34265"] },
+    { "ecosystem": "PyPI", "package": "requests", "affected": { "version_lt": "2.20.0" }, "cve": "CVE-2018-18074", "cwe": "CWE-522", "severity": "Medium", "fixed": "2.20.0", "title": "requests leaks Authorization header on redirect", "references": ["CVE-2018-18074"] },
+    { "ecosystem": "PyPI", "package": "pyyaml", "affected": { "version_lt": "5.4" }, "cve": "CVE-2020-14343", "cwe": "CWE-20", "severity": "Critical", "fixed": "5.4", "title": "PyYAML full_load arbitrary code execution", "references": ["CVE-2020-14343"] },
+    { "ecosystem": "PyPI", "package": "urllib3", "affected": { "version_lt": "1.26.5" }, "cve": "CVE-2021-33503", "cwe": "CWE-400", "severity": "High", "fixed": "1.26.5", "title": "urllib3 ReDoS in URL authority parsing", "references": ["CVE-2021-33503"] },
+    { "ecosystem": "PyPI", "package": "jinja2", "affected": { "version_lt": "2.11.3" }, "cve": "CVE-2020-28493", "cwe": "CWE-400", "severity": "Medium", "fixed": "2.11.3", "title": "Jinja2 ReDoS in urlize", "references": ["CVE-2020-28493"] },
+    { "ecosystem": "PyPI", "package": "flask", "affected": { "version_lt": "2.2.5" }, "cve": "CVE-2023-30861", "cwe": "CWE-539", "severity": "High", "fixed": "2.2.5", "title": "Flask may cache cross-session cookies", "references": ["CVE-2023-30861"] },
+    { "ecosystem": "Maven", "package": "log4j-core", "affected": { "version_ge": "2.0", "version_lt": "2.17.1" }, "cve": "CVE-2021-44228", "cwe": "CWE-502", "severity": "Critical", "fixed": "2.17.1", "title": "Apache Log4j2 JNDI RCE (Log4Shell)", "references": ["CVE-2021-44228"] }
+  ]
+}
