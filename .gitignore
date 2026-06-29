@@ -28,6 +28,7 @@ scope*.yml
 !examples/scope.example.yaml
 
 # Editor
+.claude/
 .idea/
 .vscode/
 *.swp
