@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="vulnscan is an authorized-use, detection-only vulnerability scanner for network targets and source repositories.">
+  <title>vulnscan — authorized security assessment</title>
+  <style>
+    :root { color-scheme:dark; --bg:#070b11; --panel:#101722; --text:#f1f6fc; --muted:#9aa9bb; --line:#253041; --cyan:#65d9f3; --amber:#f4c76b; --red:#ff7b72; }
+    * { box-sizing:border-box; }
+    html { font:16px/1.6 ui-sans-serif,system-ui,sans-serif; background:var(--bg); color:var(--text); }
+    body { margin:0; min-block-size:100vh; background:linear-gradient(135deg,transparent 50%,#0a1820),radial-gradient(circle at 20% 0,#112534 0,transparent 38rem); }
+    a { color:inherit; }
+    .wrap { inline-size:min(1100px,calc(100% - 2rem)); margin-inline:auto; }
+    .legal { padding:.75rem 1rem; border-block-end:1px solid #5b4120; background:#271d0f; color:#f9d994; text-align:center; font-size:.9rem; }
+    header { padding-block:5rem 3rem; }
+    .mark { color:var(--cyan); font:700 .82rem/1 ui-monospace,monospace; letter-spacing:.12em; text-transform:uppercase; }
+    h1 { margin:.8rem 0 .7rem; font:800 clamp(3rem,9vw,6.5rem)/.9 ui-monospace,monospace; letter-spacing:-.07em; }
+    .lead { max-inline-size:760px; color:var(--muted); font-size:clamp(1.05rem,2vw,1.28rem); }
+    .actions { display:flex; flex-wrap:wrap; gap:.75rem; margin-block-start:1.7rem; }
+    .button { display:inline-flex; min-block-size:44px; align-items:center; padding:.65rem 1rem; border:1px solid var(--line); border-radius:.55rem; background:var(--panel); text-decoration:none; font-weight:700; }
+    .button.primary { border-color:#277b8d; background:#123642; color:#9deafa; }
+    .grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-block:1rem 3rem; }
+    .card { padding:1.25rem; border:1px solid var(--line); border-radius:.8rem; background:rgba(16,23,34,.88); }
+    .card b { display:block; margin-block-end:.35rem; color:var(--cyan); }
+    .card span { color:var(--muted); font-size:.91rem; }
+    .local { display:grid; grid-template-columns:.8fr 1.2fr; gap:2rem; align-items:start; margin-block:3rem; }
+    .local h2 { margin:0; font-size:2rem; }
+    .local p { color:var(--muted); }
+    .static-note { padding:1rem; border-inline-start:4px solid var(--red); background:#211217; color:#dcb7bc; }
+    pre { overflow:auto; margin:0; padding:1.2rem; border:1px solid var(--line); border-radius:.8rem; background:#03070c; color:#b9f4e5; }
+    footer { padding-block:2rem 3rem; border-block-start:1px solid var(--line); color:var(--muted); font-size:.9rem; }
+    @media (max-width:850px) { .grid{grid-template-columns:repeat(2,1fr)}.local{grid-template-columns:1fr} }
+    @media (max-width:520px) { header{padding-block-start:3rem}.grid{grid-template-columns:1fr} }
+  </style>
+</head>
+<body>
+  <div class="legal"><strong>Authorized use only.</strong> Scan only systems you own or have explicit written permission to assess.</div>
+  <header class="wrap">
+    <span class="mark">Detection · reporting · no exploitation</span>
+    <h1>vulnscan</h1>
+    <p class="lead">A modular asynchronous scanner for defensive network assessments and read-only source-repository analysis, with console, JSON, HTML, and browser dashboard reporting.</p>
+    <nav class="actions" aria-label="Project links">
+      <a class="button primary" href="https://github.com/sadeqisaidmohaddes-star/vuln-scanner">View source on GitHub</a>
+      <a class="button" href="https://github.com/sadeqisaidmohaddes-star/vuln-scanner#installation">Installation guide</a>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <section class="grid" aria-label="Scanner capabilities">
+      <article class="card"><b>Web posture</b><span>TLS configuration, HTTP headers, exposed files, and careful injection detection.</span></article>
+      <article class="card"><b>Network surface</b><span>DNS hygiene, scoped TCP ports, and version-to-signature correlation.</span></article>
+      <article class="card"><b>Source scanning</b><span>Secrets, dependencies, sensitive files, and risky code patterns in repositories.</span></article>
+      <article class="card"><b>Structured evidence</b><span>Consistent findings with severity, evidence, remediation, and exportable reports.</span></article>
+    </section>
+
+    <aside class="static-note"><strong>Project site only:</strong> GitHub Pages cannot run Python, open TCP connections, clone repositories, or host the FastAPI scanning service. Install vulnscan locally for real authorized assessments.</aside>
+
+    <section class="local">
+      <div>
+        <h2>Start locally</h2>
+        <p>Requires Python 3.11+. The authorization flag is deliberate: it makes scan intent explicit before any assessment begins.</p>
+      </div>
+      <pre><code>git clone https://github.com/sadeqisaidmohaddes-star/vuln-scanner.git
+cd vuln-scanner
+python -m venv .venv
+pip install -r requirements.txt
+python -m vulnscan --list-modules</code></pre>
+    </section>
+  </main>
+
+  <footer class="wrap">Defensive security software by <a href="https://github.com/sadeqisaidmohaddes-star">Said Mohaddes Sadeqi</a> · Review the full legal and ethical notice before use.</footer>
+</body>
+</html>
